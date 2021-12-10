@@ -1,0 +1,41 @@
+master:
+  image: redis
+  ports:
+    - 6379:6379
+slave:
+  image: redis
+  command: redis-server --slaveof redis-master 6379
+  ports:
+    - 6380:6379
+  links:
+    - master:redis-master
+sentinel1:
+  image: sentinel
+  ports:
+    - 6381:26379
+  environment:
+    - SENTINEL_DOWN_AFTER=5000
+    - SENTINEL_FAILOVER=5000    
+  links:
+    - master:redis-master
+    - slave
+sentinel2:
+  image: sentinel
+  ports:
+    - 6382:26379
+  environment:
+    - SENTINEL_DOWN_AFTER=5000
+    - SENTINEL_FAILOVER=5000
+  links:
+    - master:redis-master
+    - slave
+sentinel3:
+  image: sentinel
+  ports:
+    - 6383:26379
+  environment:
+    - SENTINEL_DOWN_AFTER=5000
+    - SENTINEL_FAILOVER=5000
+  links:
+    - master:redis-master
+    - slave
